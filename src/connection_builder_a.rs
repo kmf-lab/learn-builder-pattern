@@ -25,7 +25,7 @@ pub struct ConnectionBuilder {
 impl Default for ConnectionBuilder {
     fn default() -> Self {
         Self {
-            address: "127.0.0.1".into(),
+            address: "127.0.0.1".to_string(),
             port: None,
             protocol: Protocol::Udp,
             encryption: false,
