@@ -1,4 +1,9 @@
-// main.rs
+
+#[allow(dead_code)]
+pub(crate) fn use_connection(c: &Connection) -> String {
+    format!("{}:{}", c.address, c.port)
+}
+
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -74,12 +79,6 @@ impl ConnectionBuilder {
         })
     }
 }
-
-#[allow(dead_code)]
-pub(crate) fn use_connection(c: &Connection) -> String {
-    format!("{}:{}", c.address, c.port)
-}
-
 
 
 

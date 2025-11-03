@@ -1,3 +1,11 @@
+
+
+#[allow(dead_code)]
+pub(crate) fn use_connection(conn: &Connection) {
+    println!("{conn:?}");
+}
+
+
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Protocol {
@@ -70,13 +78,8 @@ impl ConnectionBuilder {
 
 
 
-// let conn = maybe_port
-// .map(|p| builder.port(p))
-// .unwrap_or(builder.port(8080))
-// .build()?;
 
-
-//we can combine macros with the builder pattern
+//Alternate:: we can combine macros with the builder pattern
 #[macro_export]
 macro_rules! connect {
     // (address, port)
@@ -96,21 +99,12 @@ macro_rules! connect {
     };
 }
 
-#[allow(dead_code)]
-pub(crate) fn use_connection(conn: &Connection) {
-    println!("{conn:?}");
-}
-
 //  hybrid macro + builder
 // let a = connect!("10.0.0.1", 8080).unwrap();
 // let b = connect!("10.0.0.1", 443, true).unwrap();
 // println!("{:?}\n{:?}", a, b);
 // 
-// 👉 Teaching point:
-// 
 // 
 // “Macros can simulate overloads by pattern‑matching argument counts,
-// 
 // but we lose type guidance, IDE completion, and compile clarity.
-// 
 // Builders, enums, and traits express intent far better.”

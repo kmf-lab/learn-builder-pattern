@@ -1,3 +1,5 @@
+# https://github.com/kmf-lab/learn_var_args_solutions
+
 | Pattern | What It Models | What Makes It Special | When to Choose It |
 |----------|----------------|-----------------------|-------------------|
 | **Enum** | Variants of **data shape** | • Closed set of well‑defined options<br>• Each variant carries its own fields<br>• Compiler enforces exhaustive handling<br>• Eliminates invalid combinations | ✅ When the possible kinds are **known ahead of time**<br>✅ When you’d otherwise use overloaded fns or flag params<br>💡 Great for configuration or “mode” switching |

@@ -1,11 +1,30 @@
-// ------------------------------------------------------------
-// connection_hybrid.rs
-// ------------------------------------------------------------
 
 use std::fmt::Debug;
 
+/// Demonstrates direct use of the enum interface (pattern matching)
+#[allow(dead_code)]
+pub fn use_enum_connection(conn: &Connection) {
+    println!("[enum] {}", conn.describe());
+    conn.connect();
+    match conn {
+        Connection::Tcp(_) => println!("   handled as TCP variant\n"),
+        Connection::Udp(_) => println!("   handled as UDP variant\n"),
+        Connection::Local(_) => println!("   handled as Local variant\n"),
+    }
+}
+
+/// Demonstrates use through a trait object reference (`&dyn Connectable`)
+#[allow(dead_code)]
+pub fn use_connection_trait(conn: &dyn Connectable) {
+    println!("[trait] {}", conn.describe());
+    conn.connect();
+    println!();
+}
+
+
+
 // ---------------------------------------------------------------------
-// 1️⃣ Shared behavior: the Trait
+// Shared behavior: the Trait
 // ---------------------------------------------------------------------
 
 /// The `Connectable` trait represents behavior shared across all connection types.
@@ -17,7 +36,7 @@ pub trait Connectable: Debug {
 }
 
 // ---------------------------------------------------------------------
-// 2️⃣ Concrete types implementing the trait
+// Concrete types implementing the trait
 // ---------------------------------------------------------------------
 
 #[derive(Debug)]
@@ -78,7 +97,7 @@ impl Connectable for LocalHostConnection {
 }
 
 // ---------------------------------------------------------------------
-// 3️⃣ Enum wraps our different connection types
+// Enum wraps our different connection types
 // ---------------------------------------------------------------------
 //
 // This is the *hybrid pattern*:
@@ -130,28 +149,4 @@ impl Connection {
             Self::Local(c) => c.as_ref(),
         }
     }
-}
-
-// ---------------------------------------------------------------------
-// 4️⃣ Demo helpers showing both Enum and Trait views
-// ---------------------------------------------------------------------
-
-/// Demonstrates direct use of the enum interface (pattern matching)
-#[allow(dead_code)]
-pub fn use_enum_connection(conn: &Connection) {
-    println!("[enum] {}", conn.describe());
-    conn.connect();
-    match conn {
-        Connection::Tcp(_) => println!("   handled as TCP variant\n"),
-        Connection::Udp(_) => println!("   handled as UDP variant\n"),
-        Connection::Local(_) => println!("   handled as Local variant\n"),
-    }
-}
-
-/// Demonstrates use through a trait object reference (`&dyn Connectable`)
-#[allow(dead_code)]
-pub fn use_connection_trait(conn: &dyn Connectable) {
-    println!("[trait] {}", conn.describe());
-    conn.connect();
-    println!();
 }

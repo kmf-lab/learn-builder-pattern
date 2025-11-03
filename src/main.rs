@@ -4,6 +4,9 @@ mod connection_builder_b;
 mod connection_traits;
 mod connection_hybrid;
 
+///////////////////////////////
+//  Review 1) usage 2) implementation
+///////////////////////////////
 
 // fn main() {
 //     let connections = vec![
@@ -27,38 +30,44 @@ mod connection_hybrid;
 // }
 
 
-
 // fn main() -> Result<(), Box<dyn std::error::Error>> {
 //     let conn = connection_builder_a::ConnectionBuilder::default()
 //         .address("10.0.0.1")
 //         .protocol(crate::connection_builder_a::Protocol::Tcp)
 //         .port(8080)
 //         .build()?;
-// 
+//
 //     connection_builder_a::use_connection(&conn);
+//
+//     // NOTE: another possible example
+//     // let conn = maybe_port
+//     // .map(|p| builder.port(p))
+//     // .unwrap_or(builder.port(8080))
+//     // .build()?;
+//
 //     Ok(())
 // }
 
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut connections = Vec::new();
-
-    // ❌ For every connection, we re-build the entire builder — repetitive, error prone
-    for port in 8080..8180 {
-        let conn = crate::connection_builder_a::ConnectionBuilder::default()
-            .address("10.0.0.1") // repeated every loop
-            .protocol(crate::connection_builder_a::Protocol::Tcp) // repeated every loop
-            .port(port)              // only thing that really changes
-            .build()?;
-
-        connections.push(conn); //single simple arg
-    }
-
-    println!("Built {} connections.", connections.len());
-    connection_builder_a::use_connection(connections.first().expect("no connections"));
-    connection_builder_a::use_connection(connections.last().expect("no connections"));
-    Ok(())
-}
+// fn main() -> Result<(), Box<dyn std::error::Error>> {
+//     let mut connections = Vec::new();
+// 
+//     // ❌ For every connection, we re-build the entire builder — repetitive, error prone
+//     for port in 8080..8180 {
+//         let conn = crate::connection_builder_a::ConnectionBuilder::default()
+//             .address("10.0.0.1") // repeated every loop
+//             .protocol(crate::connection_builder_a::Protocol::Tcp) // repeated every loop
+//             .port(port)              // only thing that really changes
+//             .build()?;
+// 
+//         connections.push(conn); //single simple arg
+//     }
+// 
+//     println!("Built {} connections.", connections.len());
+//     connection_builder_a::use_connection(connections.first().expect("no connections"));
+//     connection_builder_a::use_connection(connections.last().expect("no connections"));
+//     Ok(())
+// }
 
 
 // fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -66,16 +75,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 //     let base_builder = connection_builder_b::ConnectionBuilder::default()
 //         .address("10.0.0.1")
 //         .protocol(crate::connection_builder_b::Protocol::Tcp);
-//
+// 
 //     // Generate 100 different connections by only varying port
 //     let connections: Vec<crate::connection_builder_b::Connection> = (8080..8180)
 //         .map(|p| base_builder.port(p).build().expect("unable to build connection"))
 //         .collect();
-//
+// 
 //     println!("Built {} connections.", connections.len());
 //     connection_builder_b::use_connection(connections.first().expect("no connections"));
 //     connection_builder_b::use_connection(connections.last().expect("no connections"));
-//
+// 
 //     Ok(())
 // }
 
@@ -145,28 +154,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 // }
 
 
-// fn main() {
-//     let connections = vec![
-//         connection_hybrid::Connection::Tcp(Box::new(connection_hybrid::TcpConnection {
-//             address: "10.0.0.1".to_string(),
-//             port: 443,
-//             encryption: true,
-//         })),
-//         connection_hybrid::Connection::Udp(Box::new(connection_hybrid::UdpConnection {
-//             address: "10.0.0.2".to_string(),
-//             port: 8080,
-//         })),
-//         connection_hybrid::Connection::Local(Box::new(connection_hybrid::LocalHostConnection { port: 9000 })),
-//     ];
-// 
-//     println!("--- Using Enum Interface ---");
-//     for conn in &connections {
-//         connection_hybrid::use_enum_connection(conn);
-//     }
-// 
-//     println!("--- Using Trait Interface via Enum ---");
-//     for conn in &connections {
-//         connection_hybrid::use_connection_trait(conn.as_dyn());
-//     }
-// }
+fn main() {
+    let connections = vec![
+        connection_hybrid::Connection::Tcp(Box::new(connection_hybrid::TcpConnection {
+            address: "10.0.0.1".to_string(),
+            port: 443,
+            encryption: true,
+        })),
+        connection_hybrid::Connection::Udp(Box::new(connection_hybrid::UdpConnection {
+            address: "10.0.0.2".to_string(),
+            port: 8080,
+        })),
+        connection_hybrid::Connection::Local(Box::new(connection_hybrid::LocalHostConnection { port: 9000 })),
+    ];
+
+    println!("--- Using Enum Interface ---");
+    for conn in &connections {
+        connection_hybrid::use_enum_connection(conn);
+    }
+
+    println!("--- Using Trait Interface via Enum ---");
+    for conn in &connections {
+        connection_hybrid::use_connection_trait(conn.as_dyn());
+    }
+}
 

@@ -1,6 +1,20 @@
-// ------------------------------------------------------------
-// connection_traits.rs
-// ------------------------------------------------------------
+/// 🧩 Static dispatch: Compile-time monomorphization of `Connectable`
+/// The compiler generates specialized code for each type of T.
+#[allow(dead_code)]
+pub fn use_connection_generic<T: Connectable>(conn: &T) {
+    println!("[generic] {}", conn.describe());
+    conn.connect();
+    println!();
+}
+
+/// 🌀 Dynamic dispatch: Single runtime entry point for Connectable trait objects
+#[allow(dead_code)]
+pub fn use_connection_dyn(conn: &dyn Connectable) {
+    println!("[dyn] {}", conn.describe());
+    conn.connect();
+    println!();
+}
+
 
 // The trait every connection type must implement.
 pub trait Connectable: std::fmt::Debug {
@@ -69,23 +83,3 @@ impl Connectable for LocalHostConnection {
     }
 }
 
-// ---------------------------------------------------------------------
-// Generic and Dynamic use functions
-// ---------------------------------------------------------------------
-
-/// 🧩 Static dispatch: Compile-time monomorphization of `Connectable`
-/// The compiler generates specialized code for each type of T.
-#[allow(dead_code)]
-pub fn use_connection_generic<T: Connectable>(conn: &T) {
-    println!("[generic] {}", conn.describe());
-    conn.connect();
-    println!();
-}
-
-/// 🌀 Dynamic dispatch: Single runtime entry point for Connectable trait objects
-#[allow(dead_code)]
-pub fn use_connection_dyn(conn: &dyn Connectable) {
-    println!("[dyn] {}", conn.describe());
-    conn.connect();
-    println!();
-}

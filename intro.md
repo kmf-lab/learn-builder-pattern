@@ -17,7 +17,7 @@ Rust, by design, **does not** support either:
 - ✅ every parameter list is fully typed and explicit.
 
 At first glance, this might seem limiting — but this limitation is intentional.
-Rust asks you to **model variation in types**, not in runtime behavior.
+Rust asks you to **model variation in types**.
 
 ---
 
@@ -49,15 +49,15 @@ Each approach solves a different facet of the same design challenge —
 
 ## 4️⃣ Why It Matters
 
-### ❌ Common anti‑patterns
+### ❌ Common anti‑patterns !!!
 - Multiple overloaded functions for each argument combination
 - Long lists of `Option<T>` or `bool` flags
 - Functions that accept enums but ignore some variants
 
 ### ✅ Rust’s approach
-- **Enums** express *what can vary in shape.*
+- **Enums** express *what can vary in SHAPE.*
 - **Builders** express *how we combine and supply configuration.*
-- **Traits** express *which behaviors a type must implement.*
+- **Traits** express *which BEHAVIORS a type must implement.*
 
 Together, these patterns form Rust’s idiomatic answer to “var‑args and overloads”:  
 they shift the flexibility *into the type system*.

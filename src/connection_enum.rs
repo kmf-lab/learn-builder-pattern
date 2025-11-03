@@ -1,6 +1,21 @@
-// ------------------------------------------------------------
-// connection_enum.rs
-// ------------------------------------------------------------
+
+
+#[allow(dead_code)]
+pub fn use_connection(conn: &Connection) {
+    println!("Using enum connection: {}", conn.describe());
+    conn.connect();
+    match conn {   //we can match on this for specific behavior.
+        Connection::Tcp { port: 443, encryption: false, .. } => {
+            // Warning case: HTTPS port without encryption
+            println!("WARNING: Port 443 detected but encryption is OFF—fallback to insecure mode");
+        }
+        Connection::Tcp { .. } => {}
+        Connection::Udp { .. } => {}
+        Connection::LocalHost { .. } => {}
+    }
+    println!("\n");
+}
+
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum Connection {
@@ -69,14 +84,3 @@ impl Connection {
     }
 }
 
-#[allow(dead_code)]
-pub fn use_connection(conn: &Connection) {
-     println!("Using enum connection: {}", conn.describe());
-     conn.connect(); 
-     match conn {   //we can match on this for specific behavior.
-         Connection::Tcp { .. } => {} //by port matching??
-         Connection::Udp { .. } => {}
-         Connection::LocalHost { .. } => {}
-     }
-     println!("\n");
- }

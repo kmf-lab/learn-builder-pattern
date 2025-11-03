@@ -1,5 +1,5 @@
 [package]
-name = "learn-builder-pattern"
+name = "learn_var_args_solutions"
 version = "0.1.0"
 edition = "2024"
 
