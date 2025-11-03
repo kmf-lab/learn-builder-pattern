@@ -75,7 +75,7 @@ impl ConnectionBuilder {
     }
 }
 
-
+#[allow(dead_code)]
 pub(crate) fn use_connection(c: &Connection) -> String {
     format!("{}:{}", c.address, c.port)
 }

@@ -1,5 +1,3 @@
-use crate::connection_builder_b::Connection;
-
 mod connection_enum;
 mod connection_builder_a;
 mod connection_builder_b;
