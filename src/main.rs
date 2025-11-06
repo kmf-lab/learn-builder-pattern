@@ -89,36 +89,46 @@ mod connection_hybrid;
 // }
 
 
-// fn main() -> Result<(), Box<dyn std::error::Error>> {
-// 
-//     let groups = vec![
-//         ("10.0.0.1", 8080..8090),
-//         ("10.0.0.2", 8090..8100),
-//         ("127.0.0.1", 8100..8110),
-//     ];
-// 
-//     let mut connections = Vec::new();
-// 
-//     // one shared default builder with base configuration
-//     let base_builder = connection_builder_b::ConnectionBuilder::default()
-//         .protocol(crate::connection_builder_b::Protocol::Tcp);
-// 
-//     for (addr, ports) in groups {
-//         // create an address-specific builder layer
-//         let addr_builder = base_builder.address(addr);
-// 
-//         for port in ports {
-//             connections.push(addr_builder.port(port).build()?);
-//         }
-//     }
-// 
-//     println!("Built {} connections:", connections.len());
-//     for (i, c) in connections.iter().enumerate() {
-//         println!("{:>2}: {:?}", i, connection_builder_b::use_connection(c));
-//     }
-// 
-//     Ok(())
-// }
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    let groups = vec![
+        ("10.0.0.1", 8080..8090),
+        ("10.0.0.2", 8090..8100),
+        ("127.0.0.1", 8100..8110),
+    ];
+
+    let mut connections = Vec::new();
+
+    // one shared default builder with base configuration
+    let base_builder = connection_builder_b::ConnectionBuilder::default()
+        .protocol(crate::connection_builder_b::Protocol::Tcp);
+
+
+    let mut addr_specific_builders = Vec::new();
+
+    for (addr, ports) in groups {
+        // create an address-specific builder layer
+        let addr_builder = base_builder.address(addr);
+        //we can hold the builder since it will not be modified again
+        addr_specific_builders.push(base_builder.address(addr));
+
+        for port in ports {
+            connections.push(addr_builder.port(port).build()?);
+        }
+    }
+
+    //now we add port 11000 to every ip
+    addr_specific_builders.iter()
+        .flat_map(|builder|builder.port(11000).build())
+        .for_each(|c| connections.push(c));
+
+    println!("Built {} connections:", connections.len());
+    for (i, c) in connections.iter().enumerate() {
+        println!("{:>2}: {:?}", i, connection_builder_b::use_connection(c));
+    }
+
+    Ok(())
+}
 
 
 // fn main() {
@@ -154,28 +164,28 @@ mod connection_hybrid;
 // }
 
 
-fn main() {
-    let connections = vec![
-        connection_hybrid::Connection::Tcp(Box::new(connection_hybrid::TcpConnection {
-            address: "10.0.0.1".to_string(),
-            port: 443,
-            encryption: true,
-        })),
-        connection_hybrid::Connection::Udp(Box::new(connection_hybrid::UdpConnection {
-            address: "10.0.0.2".to_string(),
-            port: 8080,
-        })),
-        connection_hybrid::Connection::Local(Box::new(connection_hybrid::LocalHostConnection { port: 9000 })),
-    ];
-
-    println!("--- Using Enum Interface ---");
-    for conn in &connections {
-        connection_hybrid::use_enum_connection(conn);
-    }
-
-    println!("--- Using Trait Interface via Enum ---");
-    for conn in &connections {
-        connection_hybrid::use_connection_trait(conn.as_dyn());
-    }
-}
+// fn main() {
+//     let connections = vec![
+//         connection_hybrid::Connection::Tcp(Box::new(connection_hybrid::TcpConnection {
+//             address: "10.0.0.1".to_string(),
+//             port: 443,
+//             encryption: true,
+//         })),
+//         connection_hybrid::Connection::Udp(Box::new(connection_hybrid::UdpConnection {
+//             address: "10.0.0.2".to_string(),
+//             port: 8080,
+//         })),
+//         connection_hybrid::Connection::Local(Box::new(connection_hybrid::LocalHostConnection { port: 9000 })),
+//     ];
+// 
+//     println!("--- Using Enum Interface ---");
+//     for conn in &connections {
+//         connection_hybrid::use_enum_connection(conn);
+//     }
+// 
+//     println!("--- Using Trait Interface via Enum ---");
+//     for conn in &connections {
+//         connection_hybrid::use_connection_trait(conn.as_dyn());
+//     }
+// }
 
